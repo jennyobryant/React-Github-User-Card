@@ -31,14 +31,30 @@ class App extends React.Component{
   componentDidMount(){
     axios.get('https://api.github.com/users/jennyobryant')
     .then(result =>{
+      this.setState({
+        user: result.data,
+        followers: []
+      });
       axios.get(result.data.followers_url)
       .then(followerresult => {
         console.log(followerresult); 
 
-        this.setState({
-          user: result.data,
-          followers: followerresult.data
-        });
+        followerresult.data.forEach (f => {
+            axios.get(f.url).then(f => {
+                var followers;
+                if (this.state === null) {
+                  followers = [];
+                } else {
+                  followers = this.state.followers;
+                }
+                this.setState({
+                  ...this.state,
+                  followers: [...followers, f.data]
+                })
+            })
+        }); 
+
+
       })
 
       console.log(result); 
@@ -57,6 +73,12 @@ class App extends React.Component{
       return(
         <>
           <h2>{this.state.user.name}</h2>
+          {this.state.followers.map (user=> (
+            <p> {user.name}
+                {user.location}
+            </p>
+          )) }
+
           <pre>{JSON.stringify(this.state, null, 4)}</pre>
         </>
       )
