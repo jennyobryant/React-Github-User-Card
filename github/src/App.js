@@ -74,9 +74,14 @@ class App extends React.Component{
         <>
           <h2>{this.state.user.name}</h2>
           {this.state.followers.map (user=> (
-            <p> {user.name}
+            <div className ='card' key={user.login}> 
+              <img src={user.avatar_url} />
+                {user.name}
                 {user.location}
-            </p>
+                {user.bio}
+                {user.followers}
+                {user.following}
+            </div>
           )) }
 
           <pre>{JSON.stringify(this.state, null, 4)}</pre>
